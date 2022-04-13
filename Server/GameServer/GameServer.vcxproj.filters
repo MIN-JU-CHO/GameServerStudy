@@ -7,6 +7,12 @@
     <Filter Include="Utils">
       <UniqueIdentifier>{52631a7f-af45-4e55-9990-08948a77d10f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\PreviousStudy">
+      <UniqueIdentifier>{6c7db380-49cb-4fdf-b134-1a89f41bd974}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Main\PreviousStudy\DeadLock">
+      <UniqueIdentifier>{641278c4-5dac-4e89-9580-fbc41165e972}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -15,16 +21,34 @@
     <ClCompile Include="pch.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="AccountManager.cpp">
+      <Filter>Main\PreviousStudy\DeadLock</Filter>
+    </ClCompile>
+    <ClCompile Include="UserManager.cpp">
+      <Filter>Main\PreviousStudy\DeadLock</Filter>
+    </ClCompile>
+    <ClCompile Include="DeadLock.cpp">
+      <Filter>Main\PreviousStudy\DeadLock</Filter>
+    </ClCompile>
     <ClCompile Include="Atomic.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
     <ClCompile Include="Lock.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
+    <ClCompile Include="SpinLockAndSleep.cpp">
+      <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="AccountManager.h">
+      <Filter>Main\PreviousStudy\DeadLock</Filter>
+    </ClInclude>
+    <ClInclude Include="UserManager.h">
+      <Filter>Main\PreviousStudy\DeadLock</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
