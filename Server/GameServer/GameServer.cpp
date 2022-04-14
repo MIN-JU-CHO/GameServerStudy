@@ -29,7 +29,7 @@ void Producer()
 		::SetEvent(handle);
 
 		// #t1 sleeps in kernel for 100ms
-		this_thread::sleep_for(10000ms);
+		//this_thread::sleep_for(10000ms);
 	}
 }
 
@@ -52,7 +52,7 @@ void Consumer()
 			int32 data = q.front();
 			q.pop();
 			// print it
-			cout << data << endl;
+			cout << q.size() << endl;
 		}
 	}
 }

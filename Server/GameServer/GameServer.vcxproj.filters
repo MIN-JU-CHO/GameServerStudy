@@ -39,6 +39,9 @@
     <ClCompile Include="SpinLockAndSleep.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
