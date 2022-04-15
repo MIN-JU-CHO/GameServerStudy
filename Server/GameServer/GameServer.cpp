@@ -4,75 +4,61 @@
 #include <thread>
 #include <atomic>
 #include <mutex>
-#include <windows.h>
+#include <future>
 
-// 뮤텍스 (mutex)
-mutex m;
-// 공용 데이터 관리 (public data manager)
-queue<int32> q;
-// 핸들 넘버 (Number of handling Event)
-HANDLE handle;
+//int64 result;
 
-// 데이터 생성 (produce data in #t1 thread)
-void Producer() 
+int64 Calculate() 
 {
-	while (true)
+	int64 sum = 0;
+
+	for (int32 i = 0; i < 100'000; i++) 
 	{
-		{
-			// locking
-			unique_lock<mutex> lock(m);
-			// produce data
-			q.push(100);
-		}
-
-		// Set Signal (파란불) After finishing producing data
-		::SetEvent(handle);
-
-		// #t1 sleeps in kernel for 100ms
-		//this_thread::sleep_for(10000ms);
+		sum += i;
 	}
-}
 
-// 데이터 소비 (consume data in #t2 thread)
-void Consumer()
-{
-	while (true)
-	{
-		// Check Signal(wake) / Non-Signal(sleep)
-		::WaitForSingleObject(handle, INFINITE);
-		// Auto(FALSE) : set Non-Signal automatically
-		// Manual(TRUE) : need code "::ResetEvent(handle);"
-		
-		// locking
-		unique_lock<mutex> lock(m);
-		// if 'q' has data
-		if (q.empty() == false) 
-		{
-			// extract the front data and delete from 'q'
-			int32 data = q.front();
-			q.pop();
-			// print it
-			cout << q.size() << endl;
-		}
-	}
-}
+	//result = sum;
 
+	return sum;
+}
 
 int main()
 {
-	// 커널 오브젝트
-	// Usage Count
-	// Signal (파란불) / Non-Signal (빨간불) << bool 초기:bInitialState
-	// Auto / Manual << bool bManualReset
-	// Number of Event (Kernel Object)
-	handle = ::CreateEvent(NULL/*보안속성(for Security)*/,
-		FALSE/*bManualReset*/, FALSE/*bInitialState*/, NULL);
+	// 동기 (Synchronous) 실행
+	//int64 sum = Calculate();
+	//cout << sum << endl;
 
-	thread t1(Producer);
-	thread t2(Consumer);
+	/*
+	// 비동기 (Asynchronous) 실행
+	thread t(Calculate);
 
-	t1.join();
-	t2.join();
+	// TODO
 
-	::CloseHandle(handle);
+	t.join();
+	*/
+	
+	// 단점: 공용 데이터 (전역변수) 필요 -> requires lock
+	// simple function을 heavy한(생성, 소멸 필요) thread 방식으로 구현해야하나?
+	
+	// Solution: Asynchronous
+	// std::future
+	{
+		// 1) deferred -> lazy evaluation 지연해서 실행하세요. (나중 호출)
+		// 2) async -> 별도의 Thread를 만들어서 실행하세요. (Parallel)
+		// 3) deferred | async -> 둘 중 알아서 골라주세요.
+		std::future<int64> future = std::async(std::launch::async, Calculate);
+
+		// TODO
+		std::future_status status = future.wait_for(1ms);
+		if (status == future_status::ready) 
+		{
+			// 완료 상태
+		}
+		// 결과물이 이제서야 필요하다!
+		future.wait(); // == WaitFor...(INFINITE)
+		
+		
+		//안기다려도 알아서 wait & get
+		int64 sum = future.get(); // 결과물이 이제서야 필요하다!
+	}
 }
