@@ -45,6 +45,12 @@
     <ClCompile Include="Condition Variable.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
+    <ClCompile Include="Future.cpp">
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
+    <ClCompile Include="Cache.cpp">
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
