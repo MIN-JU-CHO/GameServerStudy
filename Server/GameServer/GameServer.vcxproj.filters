@@ -42,13 +42,19 @@
     <ClCompile Include="Event.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
-    <ClCompile Include="Condition Variable.cpp">
+    <ClCompile Include="Condition_Variable.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
     <ClCompile Include="Future.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
     <ClCompile Include="Cache.cpp">
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
+    <ClCompile Include="CPU_PipeLine.cpp">
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
+    <ClCompile Include="Memory_Policy.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
   </ItemGroup>
