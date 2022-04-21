@@ -13,6 +13,9 @@
     <Filter Include="Main\PreviousStudy\DeadLock">
       <UniqueIdentifier>{641278c4-5dac-4e89-9580-fbc41165e972}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\PreviousStudy\LockBasedStackQueue">
+      <UniqueIdentifier>{ee962e07-d13a-41b8-9673-2c1dd23b6f51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -57,6 +60,18 @@
     <ClCompile Include="Memory_Policy.cpp">
       <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
+    <ClCompile Include="TLS.cpp">
+      <Filter>Main\PreviousStudy</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrentQueue.cpp">
+      <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="ConcurrentStack.cpp">
+      <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
+    </ClCompile>
+    <ClCompile Include="LockBasedStackQueue.cpp">
+      <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -67,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="UserManager.h">
       <Filter>Main\PreviousStudy\DeadLock</Filter>
+    </ClInclude>
+    <ClInclude Include="ConcurrentQueue.h">
+      <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="ConcurrentStack.h">
+      <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
