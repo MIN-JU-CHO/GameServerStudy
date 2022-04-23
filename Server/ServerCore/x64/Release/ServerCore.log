@@ -2,5 +2,6 @@
   CoreGlobal.cpp
   CorePch.cpp
   CoreTLS.cpp
+  Lock.cpp
   ThreadManager.cpp
   ServerCore.vcxproj -> C:\Users\SM-PC\Documents\GameServerStudy\Server\Libraries\Release\ServerCore.lib
