@@ -1,10 +1,15 @@
 #include "pch.h"
 #include "Lock.h"
 #include "CoreTLS.h"
+#include "DeadLockProfiler.h"
 
 
-void Lock::WriteLock()
+void Lock::WriteLock(const char* name)
 {
+#if _DEBUG
+	GDeadLockProfiler->PushLock(name);
+#endif
+
 	// 동일한 쓰레드가 소유하고 있다면 무조건 성공
 	// if it is the same thread, just return
 	const uint32 lockThreadId = (_lockFlag.load() && WRITE_THREAD_MASK) >> 16;
@@ -47,8 +52,11 @@ void Lock::WriteLock()
 	}
 }
 
-void Lock::WriteUnlock()
+void Lock::WriteUnlock(const char* name)
 {
+#if _DEBUG
+	GDeadLockProfiler->PopLock(name);
+#endif
 	// ReadLock 다 풀기 전에는 WriteUnlock 불가능
 	// Can't W-Unlock before unlocking all R-Lock
 	if ((_lockFlag.load() & READ_COUNT_MASK) != 0)
@@ -64,8 +72,11 @@ void Lock::WriteUnlock()
 	}
 }
 
-void Lock::ReadLock()
+void Lock::ReadLock(const char* name)
 {
+#if _DEBUG
+	GDeadLockProfiler->PushLock(name);
+#endif
 	// 동일한 쓰레드가 소유하고 있다면 무조건 성공
 	// if it is the same thread, R++ and return
 	const uint32 lockThreadId = (_lockFlag.load() && WRITE_THREAD_MASK) >> 16;
@@ -99,8 +110,11 @@ void Lock::ReadLock()
 	}
 }
 
-void Lock::ReadUnlock()
+void Lock::ReadUnlock(const char* name)
 {
+#if _DEBUG
+	GDeadLockProfiler->PopLock(name);
+#endif
 	// 1 빼기 이전 값을 반환하므로, 이전 값이 0이었을 때를 의미
 	if ((_lockFlag.fetch_sub(1) & READ_COUNT_MASK) == 0)
 	{

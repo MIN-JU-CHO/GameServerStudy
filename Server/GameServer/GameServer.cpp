@@ -7,6 +7,10 @@
 #include <future>
 #include "ThreadManager.h"
 
+#include "PlayerManager.h"
+#include "AccountManager2.h"
+
+/*
 //CoreGlobal Core;
 class TestLock
 {
@@ -64,10 +68,30 @@ void ThreadRead()
 		this_thread::sleep_for(1ms);
 	}
 }
-
+*/
 int main()
 {
-	for (int32 i = 0; i < 5; i++)
+	GThreadManager->Launch([=]
+		{
+			while (true)
+			{
+				cout << "PlayerThenAccount" << endl;
+				GPlayerManager.PlayerThenAccount();
+				this_thread::sleep_for(100ms);
+			}
+		});
+
+	GThreadManager->Launch([=]
+		{
+			while (true)
+			{
+				cout << "AccountThenPlayer" << endl;
+				GAccountManager.AccountThenPlayer();
+				this_thread::sleep_for(100ms);
+			}
+		});
+
+	/*for (int32 i = 0; i < 5; i++)
 	{
 		GThreadManager->Launch(ThreadWrite);
 	}
@@ -78,6 +102,7 @@ int main()
 	}
 
 	GThreadManager->Join();
+	*/
 
 	/*
 	// 일부러 Crash 낼 때
@@ -89,4 +114,5 @@ int main()
 	int32 a = 3;
 	ASSERT_CRASH(a != 3);
 	*/
+
 }

@@ -1,2 +1,5 @@
-﻿  GameServer.cpp
+﻿  AccountManager2.cpp
+  GameServer.cpp
+  PlayerManager.cpp
+  코드를 생성하고 있습니다...
   GameServer.vcxproj -> C:\Users\SM-PC\Documents\GameServerStudy\Server\Binary\Debug\GameServer.exe

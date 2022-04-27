@@ -100,5 +100,38 @@ void DeadLockProfiler::Dfs(int32 here)
 	}
 
 	set<int32>& nextSet = findIt->second;
+	for (int32 there : nextSet)
+	{
+		// 아직 방문한 적이 없다면 방문한다.
+		// if it is not visited yet, visit
+		if (_discoveredOrder[there] == -1)
+		{
+			_parent[there] = here;
+			Dfs(there);
+			continue;
+		}
 
+		// here가 there보다 먼저 발견되었다면, there는 here의 후손이다. (순방향 간선)
+		if (_discoveredOrder[here] < _discoveredOrder[there])
+			continue;
+
+		// 순방향이 아니고, Dfs(there)가 아직 종료하지 않았다면, there는 here의 선조이다. (역방향 간선)
+		if (_finished[there] == false)
+		{
+			printf("%s -> %s\n", _idToName[here], _idToName[there]);
+			
+			int32 now = here;
+			while (true)
+			{
+				printf("%s -> %s\n", _idToName[_parent[now]], _idToName[now]);
+				now = _parent[now];
+				if (now == there)
+					break;
+			}
+
+			CRASH("DEADLOCK_DETECTED");
+		}
+	}
+
+	_finished[here] = true;
 }
