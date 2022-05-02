@@ -6,113 +6,73 @@
 #include <windows.h>
 #include <future>
 #include "ThreadManager.h"
+#include "RefCounting.h"
 
-#include "PlayerManager.h"
-#include "AccountManager2.h"
-
-/*
-//CoreGlobal Core;
-class TestLock
+class Wraight : public RefCountable
 {
-	// 1개 짜리의 Lock을 사용하겠다.
-	USE_LOCK;
-
 public:
-	int32 TestRead()
-	{
-		READ_LOCK;
-		// TestPush(); 나 TestPop(); 불가능 (R -> W (X)) => CRASH
-		if (_queue.empty())
-			return -1;
-		return _queue.front();
-	}
-
-	void TestPush()
-	{
-		WRITE_LOCK;
-		// TestRead(); 가능 (W -> R (O))
-		_queue.push(rand() % 100);
-	}
-
-	void TestPop()
-	{
-		WRITE_LOCK;
-
-		if (_queue.empty() == false)
-		{
-			_queue.pop();
-		}
-	}
-private:
-	queue<int32> _queue;
+	int _hp = 150;
+	int _posX = 0;
+	int _posY = 0;
 };
 
-TestLock testLock;
-
-void ThreadWrite()
+class Missile : public RefCountable
 {
-	while (true)
+public:
+	void SetTarget(Wraight* target)
 	{
-		testLock.TestPush();
-		this_thread::sleep_for(1ms);
-		testLock.TestPop();
+		_target = target;
+		// 중간에 개입 가능
+		target->AddRef();
 	}
-}
 
-void ThreadRead()
-{
-	while (true)
+	bool Update()
 	{
-		int32 value = testLock.TestRead();
-		cout << value << endl;
-		this_thread::sleep_for(1ms);
+		if (_target == nullptr)
+			return true;
+		int posX = _target->_posX;
+		int posY = _target->_posY;
+
+		// TODO : 쫓아간다
+
+		if (_target->_hp == 0)
+		{
+			_target->ReleaseRef();
+			_target = nullptr;
+			return true;
+		}
+
+		return false;
 	}
-}
-*/
+
+	Wraight* _target = nullptr;
+};
+
 int main()
 {
-	GThreadManager->Launch([=]
-		{
-			while (true)
-			{
-				cout << "PlayerThenAccount" << endl;
-				GPlayerManager.PlayerThenAccount();
-				this_thread::sleep_for(100ms);
-			}
-		});
+	Wraight* wraight = new Wraight();
+	Missile* missile = new Missile();
+	missile->SetTarget(wraight);
 
-	GThreadManager->Launch([=]
-		{
-			while (true)
-			{
-				cout << "AccountThenPlayer" << endl;
-				GAccountManager.AccountThenPlayer();
-				this_thread::sleep_for(100ms);
-			}
-		});
+	// 레이스가 피격 당함
+	wraight->_hp = 0;
+	//delete wraight;
+	wraight->ReleaseRef();
+	wraight = nullptr;
 
-	/*for (int32 i = 0; i < 5; i++)
+	while (true)
 	{
-		GThreadManager->Launch(ThreadWrite);
-	}
-	
-	for (int32 i = 0; i < 5; i++)
-	{
-		GThreadManager->Launch(ThreadRead);
+		if (missile)
+		{
+			if (missile->Update())
+			{
+				missile->ReleaseRef();
+				missile = nullptr;
+			}
+		}
 	}
 
-	GThreadManager->Join();
-	*/
-
-	/*
-	// 일부러 Crash 낼 때
-	// make crash delieberately
-	CRASH("Test");
-
-	// 조건부로 Crash 낼 때
-	// make crash by condition
-	int32 a = 3;
-	ASSERT_CRASH(a != 3);
-	*/
-
+	missile->ReleaseRef();
+	missile = nullptr;
+	//delete missile;
 }

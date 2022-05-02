@@ -16,6 +16,9 @@
     <Filter Include="Main\PreviousStudy\LockBasedStackQueue">
       <UniqueIdentifier>{ee962e07-d13a-41b8-9673-2c1dd23b6f51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Main\PreviousStudy\DeadLockDetection">
+      <UniqueIdentifier>{d711c2ef-8581-4ccd-b715-56896b2691fb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -73,10 +76,16 @@
       <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
     </ClCompile>
     <ClCompile Include="AccountManager2.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\PreviousStudy\DeadLockDetection</Filter>
     </ClCompile>
     <ClCompile Include="PlayerManager.cpp">
-      <Filter>Main</Filter>
+      <Filter>Main\PreviousStudy\DeadLockDetection</Filter>
+    </ClCompile>
+    <ClCompile Include="DeadLockDetection.cpp">
+      <Filter>Main\PreviousStudy\DeadLockDetection</Filter>
+    </ClCompile>
+    <ClCompile Include="PrimeNumber_Practice.cpp">
+      <Filter>Main\PreviousStudy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,10 +105,10 @@
       <Filter>Main\PreviousStudy\LockBasedStackQueue</Filter>
     </ClInclude>
     <ClInclude Include="AccountManager2.h">
-      <Filter>Main</Filter>
+      <Filter>Main\PreviousStudy\DeadLockDetection</Filter>
     </ClInclude>
     <ClInclude Include="PlayerManager.h">
-      <Filter>Main</Filter>
+      <Filter>Main\PreviousStudy\DeadLockDetection</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

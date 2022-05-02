@@ -1,9 +1,6 @@
-﻿  pch.cpp
-  CoreGlobal.cpp
-  CorePch.cpp
-  CoreTLS.cpp
+﻿  CoreGlobal.cpp
   DeadLockProfiler.cpp
   Lock.cpp
-  ThreadManager.cpp
+  RefCounting.cpp
   코드를 생성하고 있습니다...
   ServerCore.vcxproj -> C:\Users\SM-PC\Documents\GameServerStudy\Server\Libraries\Debug\ServerCore.lib
