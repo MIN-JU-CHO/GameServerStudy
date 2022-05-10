@@ -9,80 +9,111 @@
 
 #include "RefCounting.h"
 
-class Wraight : public RefCountable
+using KnightRef = TSharedPtr<class Knight>;
+//using InventoryRef = TSharedPtr<class Inventory>;
+
+class Knight	// : public RefCountable
 {
 public:
-	int _hp = 150;
-	int _posX = 0;
-	int _posY = 0;
-};
+	Knight()
+	{
+		cout << "Knight()" << endl;
+	}
 
+	~Knight()
+	{
+		cout << "~Knight()" << endl;
+	}
 
-using WraightRef = TSharedPtr<Wraight>;
-
-class Missile : public RefCountable
-{
-public:
-	void SetTarget(WraightRef target)
+	/*
+	void SetTarget(KnightRef target)
 	{
 		_target = target;
-		// 중간에 개입 가능
-		//target->AddRef();
 	}
+	*/
 
-	bool Update()
-	{
-		if (_target == nullptr)
-			return true;
-		int posX = _target->_posX;
-		int posY = _target->_posY;
-
-		// TODO : 쫓아간다
-
-		if (_target->_hp == 0)
-		{
-			//_target->ReleaseRef();
-			_target = nullptr;
-			return true;
-		}
-
-		return false;
-	}
-
-	WraightRef _target = nullptr;
+	//KnightRef _target = nullptr;
+	//InventoryRef _inventory = nullptr;
 };
 
-using MissileRef = TSharedPtr<Missile>;
+/*
+class Inventory : public RefCountable
+{
+public:
+	Inventory(KnightRef knight) : _knight(**knight) {
+
+	}
+	Knight& _knight;	// 참조값이므로, RefCount를 늘리지 않는다.
+	// KnightRef 로 적으면 Cycle 이 생긴다. (메모리 해제되지 않는 Memory Leak 현상 발생)
+};
+*/
 
 int main()
 {
-	WraightRef wraight(new Wraight());
-	wraight->ReleaseRef();	// because of initial _refCount(1)
-	MissileRef missile(new Missile());
-	missile->ReleaseRef();	// because of initial _refCount(1)
+	// SharedPtr 한계
+	// 1) 이미 만들어진 클래스(외부 라이브러리 등) 대상으로 사용 불가
+	// ex) 외부 클래스 : public RefCountable <--상속 넣기 불가능
+	// 2) 순환 (Cycle) 문제
+
+	KnightRef k1(new Knight());
+	k1->ReleaseRef();
+	//k1->_inventory = new Inventory(k1);
+
+	// 'Shared_ptr' is from std library and it makes the same problem (Cycle)
+	shared_ptr<Knight> spr;
+
+	// 'Unique_ptr' prevents copying
+	unique_ptr<Knight> k2 = make_unique<Knight>();
+	unique_ptr<Knight> k3 = std::move(k2);	// 복사는 안되지만, 소유권 없애고 이동은 가능
+
+	// shared_ptr doesn't need any Inheritance
+	// (한계였던) 상속 불필요. 동작 조금 다름
+	// [Knight][RefCountingBlock] 기존 수동코드
+
+	// [T*][RefCountBlock*] shared_ptr도 포인터 두 개임
+	shared_ptr<Knight> spr(new Knight());
+	// make_shared 차이점: [Knight | RefCountingBlock(_Uses, _Weak)] RefCounting은 shared_ptr과 weak_ptr 모두 공통
+	shared_ptr<Knight> spr = make_shared<Knight>();
+
+	// [T*][RefCountBlock*] 복사 가능
+	shared_ptr<Knight> spr2 = spr;
 
 
-	missile->SetTarget(wraight);
+	
+	// weak_ptr는 shared_ptr 받아서 저장 가능ㅋ
+	// weak_ptr는 shared_ptr마냥 포인터로 사용할 수 없고, 존재하는지 아닌지 먼저 체크해야함
 
-	// 레이스가 피격 당함
-	wraight->_hp = 0;
-	//delete wraight;
-	//wraight->ReleaseRef();
-	wraight = nullptr;
+	weak_ptr<Knight> wpr = spr;
 
-	while (true)
-	{
-		if (missile)
-		{
-			if (missile->Update())
-			{
-				//missile->ReleaseRef();
-				missile = nullptr;
-			}
-		}
+	// Check method #1
+	bool expired = wpr.expired();
+	// Check method #2 (convert to)shared_ptr로 변환
+	shared_ptr<Knight> spr3 = wpr.lock();	// 존재하지 않을 때는 spr3 == nullptr
+	// 따라서 weak_ptr은 존재여부를 확인 중시하는 반쪽짜리 shared_ptr이다.
+
+	// RefCountBlock(useCount(shared), weakCount)
+	// 여기서 useCount는 shared_ptr 개수 if==0: [Knight]존재X, Ref는 살아있음(if weakCount != 0)
+	// weakCount는 weak_ptr 개수
+
+	if (spr3 != nullptr) {
+
 	}
 
-	//missile->ReleaseRef();
-	missile = nullptr;
-	//delete missile;
+	/*
+	KnightRef k2(new Knight());
+	k2->ReleaseRef();
+
+
+	// Cycle
+	k1->SetTarget(k2);
+	k2->SetTarget(k1);
+
+	// To solve Cycle
+	k1->SetTarget(nullptr);
+	k2->SetTarget(nullptr);
+	
+
+	k1 = nullptr;
+	k2 = nullptr;
+	*/
 }
