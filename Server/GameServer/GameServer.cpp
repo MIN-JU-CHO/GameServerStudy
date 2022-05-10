@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <future>
 #include "ThreadManager.h"
+
 #include "RefCounting.h"
 
 class Wraight : public RefCountable
@@ -16,14 +17,17 @@ public:
 	int _posY = 0;
 };
 
+
+using WraightRef = TSharedPtr<Wraight>;
+
 class Missile : public RefCountable
 {
 public:
-	void SetTarget(Wraight* target)
+	void SetTarget(WraightRef target)
 	{
 		_target = target;
 		// 중간에 개입 가능
-		target->AddRef();
+		//target->AddRef();
 	}
 
 	bool Update()
@@ -37,7 +41,7 @@ public:
 
 		if (_target->_hp == 0)
 		{
-			_target->ReleaseRef();
+			//_target->ReleaseRef();
 			_target = nullptr;
 			return true;
 		}
@@ -45,19 +49,25 @@ public:
 		return false;
 	}
 
-	Wraight* _target = nullptr;
+	WraightRef _target = nullptr;
 };
+
+using MissileRef = TSharedPtr<Missile>;
 
 int main()
 {
-	Wraight* wraight = new Wraight();
-	Missile* missile = new Missile();
+	WraightRef wraight(new Wraight());
+	wraight->ReleaseRef();	// because of initial _refCount(1)
+	MissileRef missile(new Missile());
+	missile->ReleaseRef();	// because of initial _refCount(1)
+
+
 	missile->SetTarget(wraight);
 
 	// 레이스가 피격 당함
 	wraight->_hp = 0;
 	//delete wraight;
-	wraight->ReleaseRef();
+	//wraight->ReleaseRef();
 	wraight = nullptr;
 
 	while (true)
@@ -66,13 +76,13 @@ int main()
 		{
 			if (missile->Update())
 			{
-				missile->ReleaseRef();
+				//missile->ReleaseRef();
 				missile = nullptr;
 			}
 		}
 	}
 
-	missile->ReleaseRef();
+	//missile->ReleaseRef();
 	missile = nullptr;
 	//delete missile;
 }

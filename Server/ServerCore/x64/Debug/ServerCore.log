@@ -1,6 +1,2 @@
-﻿  CoreGlobal.cpp
-  DeadLockProfiler.cpp
-  Lock.cpp
-  RefCounting.cpp
-  코드를 생성하고 있습니다...
+﻿  RefCounting.cpp
   ServerCore.vcxproj -> C:\Users\SM-PC\Documents\GameServerStudy\Server\Libraries\Debug\ServerCore.lib
